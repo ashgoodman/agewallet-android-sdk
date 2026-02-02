@@ -98,7 +98,9 @@ class AgeWallet(
 
         // Handle error response
         if (error != null) {
-            return handleError(error, errorDescription, state)
+            Log.e(TAG, "Authorization error: $error - $errorDescription")
+            storage.clearOidcState()
+            return false
         }
 
         // Validate required parameters
@@ -191,39 +193,6 @@ class AgeWallet(
         }
 
         return "${config.endpoints.auth}?$queryString"
-    }
-
-    private fun handleError(error: String, description: String?, state: String?): Boolean {
-        // Validate state even for errors
-        val storedOidc = storage.getOidcState()
-        if (storedOidc == null || storedOidc.state != state) {
-            Log.w(TAG, "Error received with invalid state")
-            storage.clearOidcState()
-            return false
-        }
-
-        // Check for regional exemption
-        if (error == "access_denied" && description == "Region does not require verification") {
-            Log.i(TAG, "Region exempt - granting 24h verification")
-
-            // Grant synthetic 24-hour verification
-            val expiresAt = System.currentTimeMillis() + (24 * 60 * 60 * 1000)
-
-            storage.setVerification(
-                VerificationState(
-                    accessToken = "region_exempt",
-                    expiresAt = expiresAt,
-                    isVerified = true
-                )
-            )
-
-            storage.clearOidcState()
-            return true
-        }
-
-        Log.e(TAG, "Authorization error: $error - $description")
-        storage.clearOidcState()
-        return false
     }
 
     private suspend fun exchangeCode(code: String, verifier: String): TokenResponse? =
