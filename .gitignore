@@ -1,0 +1,21 @@
+# Built files
+*.iml
+.gradle/
+build/
+local.properties
+.idea/
+*.hprof
+
+# Android Studio
+.DS_Store
+captures/
+
+# Kotlin
+*.kotlin_module
+
+# Keystore files
+*.jks
+*.keystore
+
+# Release signing
+signing.properties
