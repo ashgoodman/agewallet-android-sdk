@@ -35,7 +35,7 @@ class MainActivity : ComponentActivity() {
         ageWallet = AgeWallet(
             context = this,
             config = AgeWalletConfig(
-                clientId = "your-client-id",
+                clientId = "239472f9-3398-47ea-ad13-fe9502a0eb33",
                 redirectUri = "https://agewallet-sdk-demo.netlify.app/callback"
             )
         )
